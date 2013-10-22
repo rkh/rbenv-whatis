@@ -43,10 +43,6 @@ for ruby in $list; do
   esac
 done
 
-if [ $1 = rbx ]; then
-  result=$dev
-fi
-
 if [ $result = 0 ]; then
   if [ $dev = 0 ]; then
     echo $1
