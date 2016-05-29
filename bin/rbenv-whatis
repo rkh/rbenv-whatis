@@ -5,8 +5,13 @@ set -e
 result=0
 dev=0
 
+if [ "$1" = "--installed" ]; then
+  only_installed=1
+  shift
+fi
+
 if [ $# != 1 ]; then
-  echo "Usage: rbenv whatis NAME" >&2
+  echo "Usage: rbenv whatis [--whatis] NAME" >&2
   exit 1
 fi
 
@@ -27,7 +32,7 @@ esac
 
 list=`command rbenv versions --bare`
 
-if which ruby-build >/dev/null 2>&1; then
+if [ -z "$only_installed" ] && which ruby-build >/dev/null 2>&1; then
   list="$list $(ruby-build --definitions)"
 fi
 
