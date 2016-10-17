@@ -2,6 +2,19 @@
 set -e
 [ -n "$RBENV_DEBUG" ] && set -x
 
+# Provide rbenv completions
+if [ "$1" = "--complete" ]; then
+  echo --installed
+  echo current
+  echo default
+  echo global
+  echo local
+  echo system
+  rbenv-versions --bare
+  ruby-build --definitions
+  exit
+fi
+
 result=0
 dev=0
 
