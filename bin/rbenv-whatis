@@ -45,7 +45,7 @@ esac
 
 list=$(command rbenv versions --bare)
 
-if [ -z "$only_installed" ] && which ruby-build >/dev/null 2>&1; then
+if [ -z "$only_installed" ] && type rbenv-install &>/dev/null; then
   list="$list $(ruby-build --definitions)"
 fi
 
