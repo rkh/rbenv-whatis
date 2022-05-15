@@ -11,7 +11,7 @@ if [ "$1" = "--complete" ]; then
   echo local
   echo system
   rbenv-versions --bare
-  ruby-build --definitions
+  rbenv-install --list-all | fgrep -v 'Available versions:'
   exit
 fi
 
@@ -46,7 +46,7 @@ esac
 list=$(command rbenv versions --bare)
 
 if [ -z "$only_installed" ] && type rbenv-install &>/dev/null; then
-  list="$list $(ruby-build --definitions)"
+  list="$list $(rbenv-install --list-all | fgrep -v 'Available versions:')"
 fi
 
 for ruby in $list; do
