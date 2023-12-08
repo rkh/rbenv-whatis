@@ -2,17 +2,35 @@
 set -e
 [ -n "$RBENV_DEBUG" ] && set -x
 
+# Provide rbenv completions
+if [ "$1" = "--complete" ]; then
+  echo --installed
+  echo current
+  echo default
+  echo global
+  echo local
+  echo system
+  rbenv-versions --bare
+  rbenv-install --list-all | fgrep -v 'Available versions:'
+  exit
+fi
+
 result=0
 dev=0
 
+if [ "$1" = "--installed" ]; then
+  only_installed=1
+  shift
+fi
+
 if [ $# != 1 ]; then
-  echo "Usage: rbenv whatis NAME" >&2
+  echo "Usage: rbenv whatis [--whatis] NAME" >&2
   exit 1
 fi
 
 case $1 in
   default)
-    echo `command rbenv local 2>/dev/null || command rbenv global`
+    command rbenv local 2>/dev/null || command rbenv global
     exit;;
   current)
     command rbenv version-name
@@ -25,15 +43,15 @@ case $1 in
     exit;;
 esac
 
-list=`command rbenv versions --bare`
+list=$(command rbenv versions --bare)
 
-if which ruby-build >/dev/null 2>&1; then
-  list="$list $(ruby-build --definitions)"
+if [ -z "$only_installed" ] && type rbenv-install &>/dev/null; then
+  list="$list $(rbenv-install --list-all | fgrep -v 'Available versions:')"
 fi
 
 for ruby in $list; do
-  if [ $ruby = $1 ]; then
-    echo $1
+  if [ "$ruby" = "$1" ]; then
+    echo "$1"
     exit
   fi
 
@@ -43,12 +61,12 @@ for ruby in $list; do
   esac
 done
 
-if [ $result = 0 ]; then
-  if [ $dev = 0 ]; then
-    echo $1
+if [ "$result" = 0 ]; then
+  if [ "$dev" = 0 ]; then
+    echo "$1"
   else
-    echo $dev
+    echo "$dev"
   fi
 else
-  echo $result
+  echo "$result"
 fi
